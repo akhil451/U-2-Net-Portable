@@ -51,14 +51,14 @@ def save_output(image_name,pred,d_dir):
 
     imo.save(d_dir+'/'+imidx+'.png')
 
-def main():
+def main(image_dir='./test_data/test_portrait_images/portrait_im',prediction_dir='./test_data/test_portrait_images/portrait_results'):
 
     # --------- 1. get image path and name ---------
     model_name='u2net_portrait'#u2netp
 
 
-    image_dir = './test_data/test_portrait_images/portrait_im'
-    prediction_dir = './test_data/test_portrait_images/portrait_results'
+    # image_dir = './test_data/test_portrait_images/portrait_im'
+    # prediction_dir = './test_data/test_portrait_images/portrait_results'
     if(not os.path.exists(prediction_dir)):
         os.mkdir(prediction_dir)
 
@@ -112,6 +112,8 @@ def main():
         save_output(img_name_list[i_test],pred,prediction_dir)
 
         del d1,d2,d3,d4,d5,d6,d7
+
+
 
 if __name__ == "__main__":
     main()
