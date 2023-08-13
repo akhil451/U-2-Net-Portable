@@ -1,4 +1,5 @@
 import os
+import gdown
 from skimage import io, transform
 import torch
 import torchvision
@@ -51,18 +52,25 @@ def save_output(image_name,pred,d_dir):
 
     imo.save(d_dir+'/'+imidx+'.png')
 
-def main(image_dir='./test_data/test_portrait_images/portrait_im',prediction_dir='./test_data/test_portrait_images/portrait_results'):
+def process_potraits(image_dir=None,prediction_dir=None):
 
     # --------- 1. get image path and name ---------
     model_name='u2net_portrait'#u2netp
 
 
-    # image_dir = './test_data/test_portrait_images/portrait_im'
-    # prediction_dir = './test_data/test_portrait_images/portrait_results'
+    image_dir = './test_data/test_portrait_images/portrait_im' if image_dir is None else image_dir
+    prediction_dir = './test_data/test_portrait_images/portrait_results' if prediction_dir is None else prediction_dir
     if(not os.path.exists(prediction_dir)):
         os.mkdir(prediction_dir)
 
     model_dir = './saved_models/u2net_portrait/u2net_portrait.pth'
+    if not os.path.exists(model_dir):
+        gdown.download('https://drive.google.com/uc?id=1IG3HdpcRiDoWNookbncQjeaPN28t90yW',
+    './saved_models/u2net/u2net_portrait.pth',
+    quiet=False)
+
+
+
 
     img_name_list = glob.glob(image_dir+'/*')
     print("Number of images: ", len(img_name_list))
@@ -76,15 +84,15 @@ def main(image_dir='./test_data/test_portrait_images/portrait_im',prediction_dir
                                         )
     test_salobj_dataloader = DataLoader(test_salobj_dataset,
                                         batch_size=1,
-                                        shuffle=False,
-                                        num_workers=1)
+                                        shuffle=False)
 
     # --------- 3. model define ---------
 
     print("...load U2NET---173.6 MB")
     net = U2NET(3,1)
-
-    net.load_state_dict(torch.load(model_dir))
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print("device---",device)
+    net.load_state_dict(torch.load(model_dir),map_location=torch.device('cpu'))
     if torch.cuda.is_available():
         net.cuda()
     net.eval()
@@ -112,8 +120,6 @@ def main(image_dir='./test_data/test_portrait_images/portrait_im',prediction_dir
         save_output(img_name_list[i_test],pred,prediction_dir)
 
         del d1,d2,d3,d4,d5,d6,d7
-
-
 
 if __name__ == "__main__":
     main()

@@ -11,58 +11,33 @@ Finally, the main function is called if the script is run directly.
 import os
 import sys
 from gooey import Gooey, GooeyParser
-# from pexels.pexels import download_pexel_images
-# from pixabay.pixabay import download_pixabay_images
-# from bing.bing import bing_downloader
-# from settings import pexels_auth_code,pixabay_api_code
 from charset_normalizer import md__mypyc
-# from saliency import main    
 from u2net_test import process_saliency
+from u2net_portrait_test import process_potraits
+
 @Gooey()
 def main():
-    parser = GooeyParser(description="CREATE IMAGE DATASET")
-    # parser.add_argument(
-    #     "SOURCES",
-    #     metavar="SOURCES",
-    #     help="SOURCES",
-    #     widget="Listbox",
-    #     nargs="+",
-    #     choices=["Pexels", "Bing","Pixabay"],
-    # )
-    # parser.add_argument(
-    #     "CATEGORIES", type=str, help="Enter categories to download, separated by comma"
-    # )
-    # parser.add_argument(
-    #     "IMAGES_PER_CLASS",
-    #     type=str,
-    #     help="Enter number of images to download per class",
-    # )
-    parser.add_argument("INPUT_LOCATION", help="Choose the input location of Images", widget="DirChooser")
-    parser.add_argument("OUTPUT_LOCATION", help="Choose the location to save images", widget="DirChooser")
+    parser = GooeyParser(description="U2NET Portable")
+    parser.add_argument(
+        "MODE",
+        metavar="MODE",
+        help="MODE",
+        widget="Listbox",
+        nargs="+",
+        choices=["Background Removal",],
+    )
+    parser.add_argument("INPUT_LOCATION", help="Choose the input location of Images", widget="DirChooser",default = r"C:\Users\AKHIL\projects\U2Net\U-2-Net\test_data\test_images")
+    parser.add_argument("OUTPUT_LOCATION", help="Choose the location to save images", widget="DirChooser",default = r"C:\Users\AKHIL\projects\U2Net\U-2-Net-Portable\temp\b")
     args = parser.parse_args()
-    # categories = args.CATEGORIES.strip(" ").split(",")
-    # images_per_class =  int(args.IMAGES_PER_CLASS)//len(args.SOURCES)
-    # images_per_class =  int(args.IMAGES_PER_CLASS)
 
     if not os.path.exists(args.OUTPUT_LOCATION):
         os.makedirs(args.OUTPUT_LOCATION)
 
-    process_saliency(args.INPUT_LOCATION,args.OUTPUT_LOCATION)
-    # if "Pexels" in args.SOURCES:
-    #     download_pexel_images(
-    #         auth_code=pexels_auth_code,
-    #         output_loc=args.OUTPUT_LOCATION,
-    #         n_images_per_class=images_per_class,
-    #         categories=categories,
-    #     )
-    # if "Bing" in args.SOURCES:
-    # bing_downloader(
-    #     categories,
-    #     n_images_per_category=int(images_per_class),
-    #     output_dir=args.OUTPUT_LOCATION,
-    # )
+    if "Background Removal" in args.MODE:
+        process_saliency(args.INPUT_LOCATION,os.path.join(args.OUTPUT_LOCATION,"BG_REMOVAL"))
 
-
+    elif "Potrait" in args.MODE:
+        process_potraits(args.INPUT_LOCATION,os.path.join(args.OUTPUT_LOCATION,"POTRAIT"))
 
 
 if __name__ == "__main__":

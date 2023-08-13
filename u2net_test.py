@@ -1,4 +1,5 @@
 import os
+import gdown
 from skimage import io, transform
 import torch
 import torchvision
@@ -17,7 +18,7 @@ from data_loader import RescaleT
 from data_loader import ToTensor
 from data_loader import ToTensorLab
 from data_loader import SalObjDataset
-
+# 
 from model import U2NET # full size version 173.6 MB
 from model import U2NETP # small version u2net 4.7 MB
 
@@ -78,18 +79,26 @@ def process_saliency(image_dir=None,prediction_dir=None):
 
     # --------- 1. get image path and name ---------
     model_name='u2net'#u2netp
-
+    transforms_test= transforms.Compose([
+        transforms.PILToTensor(),RescaleT(320),ToTensorLab(flag=0)
+    ])
 
 
     image_dir = os.path.join(os.getcwd(), 'test_data', 'test_images') if image_dir is None else image_dir
     prediction_dir = os.path.join(os.getcwd(), 'test_data', model_name + '_results' + os.sep) if prediction_dir is None else prediction_dir
     model_dir = os.path.join(os.getcwd(), 'saved_models', model_name, model_name + '.pth')
+    if not os.path.exists(model_dir):
+        os.makedirs('./saved_models/u2net', exist_ok=True)
+        gdown.download('https://drive.google.com/uc?id=1ao1ovG1Qtx4b7EoskHXmi2E9rp5CHLcZ',
+    './saved_models/u2net/u2net.pth',
+    quiet=False)
+
 
     img_name_list = glob.glob(image_dir + os.sep + '*')
     print(img_name_list)
 
-    # --------- 2. dataloader ---------
-    #1. dataloader
+    ## --------- 2. dataloader ---------
+    ## 1. dataloader
     test_salobj_dataset = SalObjDataset(img_name_list = img_name_list,
                                         lbl_name_list = [],
                                         transform=transforms.Compose([RescaleT(320),
@@ -97,8 +106,7 @@ def process_saliency(image_dir=None,prediction_dir=None):
                                         )
     test_salobj_dataloader = DataLoader(test_salobj_dataset,
                                         batch_size=1,
-                                        shuffle=False,
-                                        num_workers=1)
+                                        shuffle=False)
 
     # --------- 3. model define ---------
     if(model_name=='u2net'):
@@ -119,9 +127,12 @@ def process_saliency(image_dir=None,prediction_dir=None):
     for i_test, data_test in enumerate(test_salobj_dataloader):
 
         print("inferencing:",img_name_list[i_test].split(os.sep)[-1])
-
         inputs_test = data_test['image']
         inputs_test = inputs_test.type(torch.FloatTensor)
+        # inputs_test = Image.open(data_test)
+        # inputs_test = inputs_test.resize((320,320))
+        # inputs_test = inputs_test.type(torch.FloatTensor)
+        # inputs_test = transforms_test(inputs_test)
 
         if torch.cuda.is_available():
             inputs_test = Variable(inputs_test.cuda())
@@ -141,6 +152,32 @@ def process_saliency(image_dir=None,prediction_dir=None):
         save_transparent(img_name_list[i_test],pred,prediction_dir)
 
         del d1,d2,d3,d4,d5,d6,d7
+
+    # for i_test, data_test in enumerate(test_salobj_dataloader):
+
+    #     print("inferencing:",img_name_list[i_test].split(os.sep)[-1])
+
+    #     inputs_test = data_test['image']
+    #     inputs_test = inputs_test.type(torch.FloatTensor)
+
+    #     if torch.cuda.is_available():
+    #         inputs_test = Variable(inputs_test.cuda())
+    #     else:
+    #         inputs_test = Variable(inputs_test)
+
+    #     d1,d2,d3,d4,d5,d6,d7= net(inputs_test)
+
+    #     # normalization
+    #     pred = d1[:,0,:,:]
+    #     pred = normPRED(pred)
+
+    #     # save results to test_results folder
+    #     if not os.path.exists(prediction_dir):
+    #         os.makedirs(prediction_dir, exist_ok=True)
+    #     # save_output(img_name_list[i_test],pred,prediction_dir)
+    #     save_transparent(img_name_list[i_test],pred,prediction_dir)
+
+    #     del d1,d2,d3,d4,d5,d6,d7
 
 def main():
 
