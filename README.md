@@ -1,3 +1,74 @@
+# U2-Net Portable PyTorch Project 
+
+Welcome to the portable version of the U2-Net (U square net) project, as published in the Pattern Recognition journal in 2020. This repository contains the necessary files and instructions to run the U2-Net model for salient object detection. Additionally, a Graphical User Interface (GUI) has been integrated into the project using Gooey, a Python library for creating simple and intuitive GUIs.
+
+![U2-Net Example](figures/screenshot.png)
+
+## About U2-Net
+
+U2-Net is a deep learning model designed for salient object detection. It leverages a Nested U-Structure architecture to effectively capture multi-scale features and improve the accuracy of detecting salient objects within images. The paper "U2-Net: Going Deeper with Nested U-Structure for Salient Object Detection" introduces the U2-Net model and provides insights into its performance.
+
+## Getting Started
+
+To use the portable version of the U2-Net project, follow these steps:
+
+1. **Clone the Repository:**
+   ```
+   git clone https://github.com/your_username/u2-net-portable.git
+   cd u2-net-portable
+   ```
+
+2. **Environment Setup:**
+   It's recommended to create a virtual environment to manage dependencies. Install the required packages using `pip`:
+   ```
+   pip install -r portable_req.txt
+   ```
+
+3.1. **Run the GUI:**
+   Launch the graphical user interface (GUI) for the U2-Net model using the following command:
+   ```
+   python portable.py
+   ```
+   This will open a user-friendly interface where you can interact with the U2-Net model and perform salient object detection on images.
+
+3.2. **BUILD GOOEY APP**
+   Launch the graphical user interface (GUI) for the U2-Net model using the following command:
+   ```
+   pyinstaller build.spec
+   ```
+   This will open a user-friendly interface where you can interact with the U2-Net model and perform salient object detection on images.
+
+## Using the GUI
+
+The GUI provides a straightforward way to utilize the U2-Net model for salient object detection:
+
+1. **Input Image:**
+   Load the image you want to analyze by clicking the "Browse" button and selecting the image file from your device.
+
+2. **Output Location:**
+   Choose the location where you want to save the resulting saliency map.
+
+3. **Run Detection:**
+   Once the input image and output location are selected, click the "Run Detection" button to initiate the salient object detection process. The GUI will display the progress, and once complete, you'll find the generated saliency map in the chosen output location.
+
+
+
+## License
+
+This project is released under the [MIT License](LICENSE).
+
+## Contact
+
+If you have any questions, issues, or suggestions, please feel free to contact us at your_email@example.com.
+
+---
+
+Thank you for your interest in the U2-Net Portable PyTorch Project! We hope this readme provides all the information you need to get started with salient object detection using the U2-Net model and the integrated GUI.
+```
+```
+
+
+
 <p align="center">
   <img width="320" height="320" src="figures/U2Net_Logo.png">
   
