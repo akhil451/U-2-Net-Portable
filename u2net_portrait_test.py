@@ -120,6 +120,6 @@ def process_potraits(image_dir=None,prediction_dir=None):
         save_output(img_name_list[i_test],pred,prediction_dir)
 
         del d1,d2,d3,d4,d5,d6,d7
-
+    del net
 if __name__ == "__main__":
     main()

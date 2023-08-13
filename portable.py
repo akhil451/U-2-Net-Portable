@@ -14,7 +14,7 @@ from gooey import Gooey, GooeyParser
 from charset_normalizer import md__mypyc
 from u2net_test import process_saliency
 from u2net_portrait_test import process_potraits
-
+from u2net_human_seg_test import process_hum_seg
 @Gooey()
 def main():
     parser = GooeyParser(description="U2NET Portable")
@@ -24,7 +24,7 @@ def main():
         help="MODE",
         widget="Listbox",
         nargs="+",
-        choices=["Background Removal",],
+        choices=["Background Removal","Human Segmentation"],
     )
     parser.add_argument("INPUT_LOCATION", help="Choose the input location of Images", widget="DirChooser",default = r"C:\Users\AKHIL\projects\U2Net\U-2-Net\test_data\test_images")
     parser.add_argument("OUTPUT_LOCATION", help="Choose the location to save images", widget="DirChooser",default = r"C:\Users\AKHIL\projects\U2Net\U-2-Net-Portable\temp\b")
@@ -39,6 +39,8 @@ def main():
     elif "Potrait" in args.MODE:
         process_potraits(args.INPUT_LOCATION,os.path.join(args.OUTPUT_LOCATION,"POTRAIT"))
 
+    elif "Human Segmentation" in args.MODE:
+        process_hum_seg(args.INPUT_LOCATION,os.path.join(args.OUTPUT_LOCATION,"HUMAN_SEG"))
 
 if __name__ == "__main__":
     main()

@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms#, utils
 # import torch.optim as optim
-
+import gdown
 import numpy as np
 from PIL import Image
 import glob
@@ -48,18 +48,20 @@ def save_output(image_name,pred,d_dir):
     for i in range(1,len(bbb)):
         imidx = imidx + "." + bbb[i]
 
-    imo.save(d_dir+imidx+'.png')
+    imo.save(os.path.join(d_dir,imidx+'.png'))
 
-def main():
+def process_hum_seg(image_dir,prediction_dir):
 
     # --------- 1. get image path and name ---------
     model_name='u2net'
 
 
-    image_dir = os.path.join(os.getcwd(), 'test_data', 'test_human_images')
-    prediction_dir = os.path.join(os.getcwd(), 'test_data', 'test_human_images' + '_results' + os.sep)
-    model_dir = os.path.join(os.getcwd(), 'saved_models', model_name+'_human_seg', model_name + '_human_seg.pth')
-
+    # image_dir = os.path.join(os.getcwd(), 'test_data', 'test_human_images')
+    # prediction_dir = os.path.join(os.getcwd(), 'test_data', 'test_human_images' + '_results' + os.sep)
+    model_dir = os.path.join(os.getcwd(), 'saved_models', model_name + '_human_seg.pth')
+    if not os.path.exists(model_dir):
+        gdown.download('https://drive.google.com/uc?id=1-Yg0cxgrNhHP-016FPdp902BR-kSsA4P',
+    model_dir,quiet=False)
     img_name_list = glob.glob(image_dir + os.sep + '*')
     print(img_name_list)
 
@@ -72,8 +74,7 @@ def main():
                                         )
     test_salobj_dataloader = DataLoader(test_salobj_dataset,
                                         batch_size=1,
-                                        shuffle=False,
-                                        num_workers=1)
+                                        shuffle=False)
 
     # --------- 3. model define ---------
     if(model_name=='u2net'):
@@ -112,6 +113,7 @@ def main():
         save_output(img_name_list[i_test],pred,prediction_dir)
 
         del d1,d2,d3,d4,d5,d6,d7
+    del net
 
 if __name__ == "__main__":
     main()
